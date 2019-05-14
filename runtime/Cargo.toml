@@ -11,6 +11,7 @@ std = [
     'executive/std',
     'aura/std',
     'indices/std',
+    'session/std',
     'primitives/std',
     'system/std',
     'timestamp/std',
@@ -28,6 +29,7 @@ authors = ['Parity Technologies <admin@parity.io>']
 edition = '2018'
 name = 'substrate-poa-runtime'
 version = '1.0.0'
+
 [dependencies.aura]
 default_features = false
 git = 'https://github.com/paritytech/substrate.git'
@@ -50,6 +52,12 @@ rev = '3dea3be10e2a635879c6532605716bc4c34d98b0'
 default_features = false
 git = 'https://github.com/paritytech/substrate.git'
 package = 'srml-consensus'
+rev = '3dea3be10e2a635879c6532605716bc4c34d98b0'
+
+[dependencies.session]
+default_features = false
+git = 'https://github.com/paritytech/substrate.git'
+package = 'srml-session'
 rev = '3dea3be10e2a635879c6532605716bc4c34d98b0'
 
 [dependencies.consensus-aura]

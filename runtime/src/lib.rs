@@ -147,6 +147,12 @@ impl consensus::Trait for Runtime {
 	type Log = Log;
 }
 
+impl session::Trait for Runtime {
+	type ConvertAccountIdToSessionKey = ();
+	type OnSessionChange = ();
+	type Event = Event;
+}
+
 impl indices::Trait for Runtime {
 	/// The type for recording indexing into the account enumeration. If this ever overflows, there
 	/// will be problems!
@@ -201,6 +207,7 @@ construct_runtime!(
 		Consensus: consensus::{Module, Call, Storage, Config<T>, Log(AuthoritiesChange), Inherent},
 		Aura: aura::{Module},
 		Indices: indices,
+		Session: session,
 		Balances: balances,
 		Sudo: sudo,
 		ValidatorSet: validatorset::{Module, Call, Storage, Config<T>, Event<T>},

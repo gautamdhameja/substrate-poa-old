@@ -1,9 +1,9 @@
 use support::{decl_module, decl_storage, decl_event, StorageMap, ensure, dispatch::Result};
 use rstd::prelude::*;
 use system::{ensure_signed};
-use consensus;
+use session;
 
-pub trait Trait: system::Trait + consensus::Trait {
+pub trait Trait: system::Trait + session::Trait {
 	type Event: From<Event<Self>> + Into<<Self as system::Trait>::Event>;
 }
 
@@ -58,18 +58,18 @@ decl_module! {
 		/// Verifies if all existing validators have proposed the new validator
 		/// and then adds the new validator.
 		/// 
-		/// Can only be called by an existing validator.
+		/// New validator's session key should be set in session module before calling this.
 		pub fn resolve_add_validator(origin, account_id: T::AccountId, session_key: T::SessionKey) -> Result {
-			let who = ensure_signed(origin)?;
-			ensure!(<Validators<T>>::exists(who.clone()), "Access Denied!");
+			let _who = ensure_signed(origin)?;
+
 			ensure!(!<Validators<T>>::exists(account_id.clone()), "Already a validator.");
 			ensure!(<AddProposals<T>>::exists((account_id.clone(), session_key.clone())), 
 				"Proposal to add this validator does not exist.");
 			
 			let votes = <Votes<T>>::get((account_id.clone(), session_key.clone()));
-			let current_count = <consensus::Module<T>>::authorities().len();
-			if votes.len() == current_count {
-				Self::add_new_authority(current_count as u32, account_id.clone(), session_key.clone())?;
+			let current_count = <session::Module<T>>::validator_count();
+			if votes.len() as u32 == current_count {
+				Self::add_new_authority(account_id.clone(), session_key.clone())?;
 			}
 
 			Self::deposit_event(RawEvent::ValidatorAdded(account_id, session_key));
@@ -77,11 +77,12 @@ decl_module! {
 		}
 
 		/// Add a new validator using root/sudo privileges.
+		/// 
+		/// New validator's session key should be set in session module before calling this.
 		pub fn add_validator(account_id: T::AccountId, session_key: T::SessionKey) -> Result {
 			ensure!(!<Validators<T>>::exists(account_id.clone()), "Already a validator.");
 			
-			let current_count = <consensus::Module<T>>::authorities().len();
-			Self::add_new_authority(current_count as u32, account_id.clone(), session_key.clone())?;
+			Self::add_new_authority(account_id.clone(), session_key.clone())?;
 
 			Self::deposit_event(RawEvent::ValidatorAdded(account_id, session_key));
 			Ok(())
@@ -91,16 +92,14 @@ decl_module! {
 
 impl<T: Trait> Module<T> {
 	// Adds new authority in the consensus module.
-	fn add_new_authority(current_count: u32, account_id: T::AccountId, session_key: T::SessionKey) -> Result {
-		// TODO: use safe math
-		let new_count = current_count + 1;
-		
-		// increase authority count in consensus module
-		<consensus::Module<T>>::set_authority_count(new_count);
+	fn add_new_authority(account_id: T::AccountId, session_key: T::SessionKey) -> Result {
+		// Add new validator in session module.
+		let mut current_validators = <session::Module<T>>::validators();
+		current_validators.push(account_id.clone());
+		<session::Module<T>>::set_validators(&current_validators);
 
-		// add new authority at the last index
-		// last index == current_count
-		<consensus::Module<T>>::set_authority(current_count, &session_key);
+		// rotate session for new set of validators to take effect
+		<session::Module<T>>::rotate_session(true, false);
 		<Validators<T>>::insert(account_id, session_key);
 		
 		Ok(())

@@ -2670,6 +2670,7 @@ dependencies = [
  "srml-consensus 1.0.0 (git+https://github.com/paritytech/substrate.git?rev=3dea3be10e2a635879c6532605716bc4c34d98b0)",
  "srml-executive 1.0.0 (git+https://github.com/paritytech/substrate.git?rev=3dea3be10e2a635879c6532605716bc4c34d98b0)",
  "srml-indices 1.0.0 (git+https://github.com/paritytech/substrate.git?rev=3dea3be10e2a635879c6532605716bc4c34d98b0)",
+ "srml-session 1.0.0 (git+https://github.com/paritytech/substrate.git?rev=3dea3be10e2a635879c6532605716bc4c34d98b0)",
  "srml-sudo 1.0.0 (git+https://github.com/paritytech/substrate.git?rev=3dea3be10e2a635879c6532605716bc4c34d98b0)",
  "srml-support 1.0.0 (git+https://github.com/paritytech/substrate.git?rev=3dea3be10e2a635879c6532605716bc4c34d98b0)",
  "srml-system 1.0.0 (git+https://github.com/paritytech/substrate.git?rev=3dea3be10e2a635879c6532605716bc4c34d98b0)",

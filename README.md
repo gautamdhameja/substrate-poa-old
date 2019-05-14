@@ -2,7 +2,7 @@
 
 A Substrate runtime which allows addition of new validators in a pure PoA fashion. No tokens or stake needed, just the authorities have to agree. This is mainly for semi-trusted consortium chain scenarios where the validators are generally known entities.
 
-The runtime includes a module called `ValidatorSet` which is an abstraction on top of the SRML `Consensus` module. It adds logic to propose and add new validators; something similar to how the ValidatorSet contract in Parity Ethereum works.
+The runtime includes a module called `ValidatorSet` which is an abstraction on top of the SRML `session` module. It adds logic to propose and add new validators; something similar to how the ValidatorSet contract in Parity Ethereum works.
 
 ## Usage
 
@@ -21,6 +21,8 @@ validatorset: Some(ValidatorSetConfig {
 ```
 
 **IMP:** The authority keys here are the session keys for the authorities and they should be exactly the same as what we have set in the genesis config of the `consensus` module. Basically, in the `ValidatorSet` module's genesis config, we are associating an AccountKey with the SessionKey of each authority.
+
+For simplicity and easy reuse of same values across genesis config of several modules, we have defined a vec with the initial values and used it thereafter. See the `testnet_genesis` function in the `chain_spec.rs` file for more details.
 
 * Build Wasm runtime using `./scripts/build.sh`.
 
@@ -60,7 +62,15 @@ Connect any of the running nodes to the Polkadot Apps portal and create a new se
 
 **Note:** You can do this using the `subkey` tool as well.
 
-### Add a new validator
+### Associate the account and session keys in the session module
+
+Because the `ValidatorSet` module depends on the `session` module, it is important to associate the account and session keys in the `session` module before we can add a new validator using the `ValidatorSet` module.
+
+In the extrinsics section of the Polkadot Apps portal, call the `set_key` function of the `session` module by using the account key generated in the previous step as the signing key for this extrinsics call. Use the session key generated in the previous step as the parameter of the `set_key` function. See the following screenshot for reference.
+
+![](./img/session.png)
+
+### Add a new validator using proposal process
 
 Go the extrinsics section of the Polkadot Apps portal and select one of the existing validator account keys in the `using the selected account` dropdown. This is the key using which the extrinsic would be signed.
 
@@ -97,3 +107,10 @@ Following the exact same steps, you can add more validators to the chain.
 The `ValidatorSet` module also includes a function `addValidator` which can be used to add a new validator using the sudo function. This approach does not require all validators to propose the new validator. The new validator is added directly because of the root priviledges of the sudo function. See the following screenshot for reference.
 
 ![](./img/sudo.png)
+
+## Important Note
+
+* The Substrate framework, related libraries and APIs are rapidly evolving. In case this module does not work with the latest Substrate build, please submit an issue in this repo.
+You can also try porting the runtime module into a freshly cloned `substrate-node-template` codebase.
+
+* This code not audited and reviewed for production use cases. You can expect bugs and security vulnerabilities. Do **not** use it as-is in real applications.
