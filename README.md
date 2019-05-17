@@ -48,7 +48,11 @@ For simplicity and easy reuse of same values across genesis config of several mo
 
 With the above commands executed, we would have two nodes running on the same machine and they should produce blocks.
 
-### Create new account and session keys
+## Addition of validators
+
+Follow these steps to add a new validator to the chain.
+
+### 1. Create new account and session keys
 
 Connect any of the running nodes to the Polkadot Apps portal and create a new set of account and session keys which can be used for the new validator.
 
@@ -62,7 +66,7 @@ Connect any of the running nodes to the Polkadot Apps portal and create a new se
 
 **Note:** You can do this using the `subkey` tool as well.
 
-### Associate the account and session keys in the session module
+### 2. Associate the account and session keys in the session module
 
 Because the `ValidatorSet` module depends on the `session` module, it is important to associate the account and session keys in the `session` module before we can add a new validator using the `ValidatorSet` module.
 
@@ -70,7 +74,7 @@ In the extrinsics section of the Polkadot Apps portal, call the `set_key` functi
 
 ![](./img/session.png)
 
-### Add a new validator using proposal process
+### 3. Add a new validator using proposal process
 
 Go the extrinsics section of the Polkadot Apps portal and select one of the existing validator account keys in the `using the selected account` dropdown. This is the key using which the extrinsic would be signed.
 
@@ -107,6 +111,14 @@ Following the exact same steps, you can add more validators to the chain.
 The `ValidatorSet` module also includes a function `addValidator` which can be used to add a new validator using the sudo function. This approach does not require all validators to propose the new validator. The new validator is added directly because of the root priviledges of the sudo function. See the following screenshot for reference.
 
 ![](./img/sudo.png)
+
+## Validator removal
+
+Existing validators can be removed by following the exact same process - either using proposals or sudo.
+
+To remove a validator using proposals, use the `propose_validator_removal` and `resolve_remove_validator` functions similar to the proposal process for addition of validators described above. All **other** validators should propose the removal of same validator and only after that the `resolve_remove_validator` function can be called.
+
+To remove a validator using sudo, simply call the `remove_validator` function using the sudo key.
 
 ## Important Note
 
