@@ -4,6 +4,8 @@ A Substrate runtime which allows addition of new validators in a pure PoA fashio
 
 The runtime includes a module called `ValidatorSet` which is an abstraction on top of the SRML `session` module. It adds logic to propose and add new validators; something similar to how the ValidatorSet contract in Parity Ethereum works.
 
+**NOTE: This PoA runtime sample is built on and compatible with the Substrate 1.0 version only. Please do not use it with any later versions or current master of Substrate.**
+
 ## Usage
 
 * Clone this repo and `cd` into it.
