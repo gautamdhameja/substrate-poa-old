@@ -1,5 +1,7 @@
 # Substrate PoA setup & ValidatorSet module
 
+**An updated version of the Validator Set module (pallet) that works with latest Substrate is available here - https://github.com/gautamdhameja/substrate-validator-set.**
+
 A Substrate runtime which allows addition of new validators in a pure PoA fashion. No tokens or stake needed, just the authorities have to agree. This is mainly for semi-trusted consortium chain scenarios where the validators are generally known entities.
 
 The runtime includes a module called `ValidatorSet` which is an abstraction on top of the SRML `session` module. It adds logic to propose and add new validators; something similar to how the ValidatorSet contract in Parity Ethereum works.
